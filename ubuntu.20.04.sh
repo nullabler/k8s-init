@@ -29,6 +29,7 @@ sudo apt-get install -y kubernetes-cni
 
 sudo hostnamectl set-hostname ${HOSTNAME}
 
+sudo modprobe overlay
 sudo modprobe br_netfilter
 sudo sysctl net.bridge.bridge-nf-call-iptables=1
 
@@ -48,12 +49,8 @@ EOF
 sudo systemctl enable docker
 sudo systemctl daemon-reload
 sudo systemctl restart docker
+sudo systemctl enable containerd
+sudo systemctl restart containerd
 
-sudo kubeadm init --pod-network-cidr=$K8S_NETWORK_CIDR --apiserver-advertise-address=$K8S_IP_ADDRESS
-sudo cp -i /etc/kubernetes/admin.conf $HOME/.kube/config
-sudo chown $(id -u):$(id -g) $HOME/.kube/config
+sudo sysctl --system
 
-cilium install
-cilium hubble enable
-
-sudo kubeadm token create --print-join-command

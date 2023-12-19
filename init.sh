@@ -2,11 +2,6 @@
 
 export $(cat .env.local | xargs)
 
-# sudo sysctl --system
-#
-# systemctl enable containerd
-# systemctl restart containerd
-
 sudo rm -r /home/$K8S_USER_CI_CD/.kube/*
 sudo cp -i /etc/kubernetes/admin.conf /home/$K8S_USER_CI_CD/.kube/config
 sudo chown $K8S_USER_CI_CD:$K8S_USER_CI_CD /home/$K8S_USER_CI_CD/.kube/config
