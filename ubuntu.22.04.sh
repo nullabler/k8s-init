@@ -49,3 +49,5 @@ EOF
 sudo systemctl enable docker
 sudo systemctl daemon-reload
 sudo systemctl restart docker
+sudo systemctl enable containerd
+sudo systemctl restart containerd
