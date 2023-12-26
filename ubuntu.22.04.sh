@@ -5,7 +5,7 @@ export $(cat .env.local | xargs)
 HOSTNAME=$1
 
 if [ -z "$HOSTNAME" ]; then 
-  if [ -z "$K8S_HOSTNAME" ]
+  if [ -z "$K8S_HOSTNAME" ]; then
     echo 'Not enough arguments (missing: "HOSTNAME" or "K8S_HOSTNAME" in .env.local)'
     exit 1
   else
