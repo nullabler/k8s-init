@@ -4,32 +4,34 @@ export $(cat .env.local | xargs)
 
 HOSTNAME=$1
 
-sudo apt-get update
-sudo apt-get upgrade
-sudo apt-get install ca-certificates curl gnupg lsb-release apt-transport-https
+if [ -z "$HOSTNAME" ]; then 
+  if [ -z "$K8S_HOSTNAME" ]
+    echo 'Not enough arguments (missing: "HOSTNAME" or "K8S_HOSTNAME" in .env.local)'
+    exit 1
+  else
+    HOSTNAME=$K8S_HOSTNAME
+  fi
+fi;
+
+sudo apt update
+sudo apt upgrade
+sudo apt install -y ca-certificates curl gnupg lsb-release apt-transport-https vim
 
 sudo mkdir -p /etc/apt/keyrings
 curl -fsSL https://download.docker.com/linux/ubuntu/gpg | sudo gpg --dearmor -o /etc/apt/keyrings/docker.gpg
-echo "deb [arch=$(dpkg --print-architecture) signed-by=/etc/apt/keyrings/docker.gpg] https://download.docker.com/linux/ubuntu $(lsb_release -cs) stable" | sudo tee /etc/apt/sources.list.d/docker.list > /dev/null
-sudo apt-get update
-sudo apt-get install docker-ce docker-ce-cli containerd.io
-
 curl -s https://packages.cloud.google.com/apt/doc/apt-key.gpg | sudo apt-key add
 
+echo "deb [arch=$(dpkg --print-architecture) signed-by=/etc/apt/keyrings/docker.gpg] https://download.docker.com/linux/ubuntu $(lsb_release -cs) stable" | sudo tee /etc/apt/sources.list.d/docker.list > /dev/null
 echo "deb https://apt.kubernetes.io/ kubernetes-xenial main" >> ~/kubernetes.list
 sudo mv ~/kubernetes.list /etc/apt/sources.list.d
 
 sudo apt update
+sudo apt install -y docker-ce docker-ce-cli containerd.io kubelet kubeadm kubectl kubernetes-cni
+sudo swapoff -a
 
+sudo hostnamectl set-hostname $HOSTNAME
 
-sudo apt install kubelet
-sudo apt install kubeadm
-sudo apt install kubectl
-sudo apt-get install -y kubernetes-cni
-
-sudo hostnamectl set-hostname ${HOSTNAME}
-
-sudo modprobe overlay
+sudo modprobe overlay 
 sudo modprobe br_netfilter
 sudo sysctl net.bridge.bridge-nf-call-iptables=1
 

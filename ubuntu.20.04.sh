@@ -27,7 +27,7 @@ sudo apt install kubeadm
 sudo apt install kubectl
 sudo apt-get install -y kubernetes-cni
 
-sudo hostnamectl set-hostname ${HOSTNAME}
+sudo hostnamectl set-hostname $HOSTNAME
 
 sudo modprobe overlay
 sudo modprobe br_netfilter
