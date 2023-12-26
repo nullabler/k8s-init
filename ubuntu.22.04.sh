@@ -38,7 +38,7 @@ sudo sysctl net.bridge.bridge-nf-call-iptables=1
 sudo ufw allow $K8S_UFW_PORT
 sudo ufw allow $K8S_UFW_PORT/tcp
     
-sudo mkdir /etc/docker
+sudo mkdir -p /etc/docker
 cat <<EOF | sudo tee /etc/docker/daemon.json
 { "exec-opts": ["native.cgroupdriver=systemd"],
 "log-driver": "json-file",

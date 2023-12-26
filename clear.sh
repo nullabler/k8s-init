@@ -21,7 +21,7 @@ sudo apt remove -y kubernetes-cni kubectl kubeadm kubelet docker-ce docker-ce-cl
 
 sudo hostnamectl set-hostname $HOSTNAME
 
-sudo rm $HOME/.kube/* /usr/local/bin/cilium
+sudo rm -r ~/.kube/* /usr/local/bin/cilium /etc/docker/daemon.json
 sudo iptables-save | grep -i cilium | sudo iptables -F && sudo iptables-save | grep -i cilium | sudo iptables -X
 sudo iptables -n -L
 
