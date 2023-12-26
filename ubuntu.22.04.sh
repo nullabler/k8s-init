@@ -21,9 +21,8 @@ sudo mkdir -p /etc/apt/keyrings
 curl -fsSL https://download.docker.com/linux/ubuntu/gpg | sudo gpg --dearmor -o /etc/apt/keyrings/docker.gpg
 curl -s https://packages.cloud.google.com/apt/doc/apt-key.gpg | sudo apt-key add
 
-echo "deb [arch=$(dpkg --print-architecture) signed-by=/etc/apt/keyrings/docker.gpg] https://download.docker.com/linux/ubuntu $(lsb_release -cs) stable" | sudo tee /etc/apt/sources.list.d/docker.list > /dev/null
-echo "deb https://apt.kubernetes.io/ kubernetes-xenial main" >> ~/kubernetes.list
-sudo mv ~/kubernetes.list /etc/apt/sources.list.d
+echo "deb [signed-by=/etc/apt/keyrings/kubernetes.gpg] https://apt.kubernetes.io/ kubernetes-xenial main" | sudo tee /etc/apt/sources.list.d/kubernetes.list
+curl -fsSL https://packages.cloud.google.com/apt/doc/apt-key.gpg | sudo gpg --dearmor -o /etc/apt/keyrings/kubernetes.gpg
 
 sudo apt update
 sudo apt install -y docker-ce docker-ce-cli containerd.io kubelet kubeadm kubectl kubernetes-cni
@@ -31,8 +30,7 @@ sudo swapoff -a
 
 sudo hostnamectl set-hostname $HOSTNAME
 
-sudo modprobe overlay 
-sudo modprobe br_netfilter
+sudo modprobe overlay br_netfilter
 sudo sysctl net.bridge.bridge-nf-call-iptables=1
 
 sudo ufw allow $K8S_UFW_PORT
@@ -51,5 +49,7 @@ EOF
 sudo systemctl enable docker
 sudo systemctl daemon-reload
 sudo systemctl restart docker
-sudo systemctl enable containerd
-sudo systemctl restart containerd
+
+sudo mkdir -p /etc/containerd/
+containerd config default | sudo tee /etc/containerd/config.toml
+
