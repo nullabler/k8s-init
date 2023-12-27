@@ -1,20 +1,24 @@
 # K8s-init
 
-### Master node
-Create .env.local like .env
+### All nodes
+```bash
+curl https://raw.githubusercontent.com/unixoff/k8s-init/master/ubuntu.22.04.sh | bash
 ```
-./ubuntu.20.04.sh master-node
-./master.sh
+
+### Master node
+```bash
+curl https://raw.githubusercontent.com/unixoff/k8s-init/master/master.sh | bash
 ```
 
 ### Worker node
-Create .env.local like .env
-```
-./ubuntu.20.04.sh worker-node-one
-./worker.sh
+Join worker nodes. 
+If you forget join token run the command on master node:
+```bash
+sudo kubeadm token create --print-join-command
 ```
 
 ### Init stage env
+Create .env.local like .env and run the command on master node:
 ```
-./init.sh
+curl https://raw.githubusercontent.com/unixoff/k8s-init/master/init.sh | bash
 ```
